@@ -1,0 +1,87 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="author" content="http://www.softwhy.com/" />
+<title>svg</title>
+</head>
+<body>
+    <svg id="svg" width="1000" height="1000" style="background-color: #f2f2f2"></svg>
+    <div id="toolbar">
+        <h2>工具栏</h2>
+        画笔颜色：<input id="penColor" type="color" /><br />
+        背景颜色：<input id="bgColor" type="color" value="#FFE4E1"/><br />
+        线条/橡皮 粗细：<br />
+        <input id="lineWeight" type="range" value="1" min="0.5" max="10" step="0.1"/><br />
+        画笔虚化：<br />
+        <input id="blurRange" type="range" value="0" min="0" max="10" step="1" /><br />
+        <input id="penButton" class="iButton" type="button" value="画笔"  /><br />
+        <input id="lineButton" class="iButton" type="button" value="直线" /><br />
+        <input id="rectButton" class="iButton" type="button" value="矩形" /><br />
+        <input id="circleButton" class="iButton" type="button" value="正圆"/><br />
+        <input id="eraserButton" class="iButton" type="button" value="橡皮" /><br />
+        <input id="allclearButton" class="iButton" type="button" value="清空" /><br />
+        
+        <div id="rectDiv">
+            矩形样式：<br />
+            <button id="strokeRect"></button>
+            <button id="fillRect"></button>
+        </div>
+        
+        <div id="circleDiv">
+            正圆样式：<br />
+            <button id="strokeCircle"></button>
+            <button id="fillCircle"></button>
+        </div>
+    </div>
+
+</body>
+<style>
+    body {
+        margin: 0;
+    }
+</style>
+<script>
+    let drawing = false;
+    let rect;
+    let downX = 0;
+    let downY = 0
+
+    function drawRect(x,y,w,h){
+        let svg = document.getElementById("svg");
+        rect = document.createElementNS("http://www.w3.org/2000/svg", "rect");
+        rect.setAttribute("x", x);
+        rect.setAttribute("y", y);
+        rect.setAttribute("width", w);
+        rect.setAttribute("height", h);
+        rect.setAttribute("fill", "red");
+        rect.setAttribute("stroke", "black");
+        rect.setAttribute("stroke-width", 3);
+        svg.appendChild(rect);
+    }
+
+    svg.addEventListener("mousedown",function(event){ 
+        drawing = true;
+        downX = event.clientX;
+        downY = event.clientY;
+        drawRect(downX, downY, 0, 0);
+    });
+
+    svg.addEventListener("mousemove",function(event){
+        if(drawing){
+            let moveX = event.clientX;
+            let moveY = event.clientY;
+            let width = Math.abs(downX - moveX);
+            let height = Math.abs(downY - moveY);
+            rect.setAttribute("x", Math.min(downX, moveX));
+            rect.setAttribute("y", Math.min(downY, moveY));
+            rect.setAttribute("width", width);
+            rect.setAttribute("height", height);
+        }
+    });
+
+    svg.addEventListener("mouseup",function(event){
+        drawing = false;
+    });
+</script>
+</html>
